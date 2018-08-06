@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Network - Sciport
+{% endblock title %}
+
+{% block additional_head %}
+    <!--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.0/css/selectize.min.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.0/css/selectize.bootstrap3.min.css" />
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.0/js/standalone/selectize.min.js"></script>-->
+{% endblock additional_head %}
+{% block content %}
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+  <script src="//d3js.org/d3.v3.min.js"></script>
+
+  <style>
+  .tabs a {
+    color: #ffffff !important;
+  }
+
+  .tabs .indicator {
+    background-color: #ffffff !important;
+  }
+  </style>
+    
+  <body onload="PopulateBubbleChart()">
+  <div class="container">
+  <div class="row card">
+
+    <div class="row">
+    <div class="col s12">
+      <ul class="tabs blue-grey lighten-1">
+        <li class="tab col s3"><a id="second" class="active" href="#test2">Geo Network</a></li>
+        <li class="tab col s3"><a id="first"  href="#test1">Skill Network</a></li>
+      </ul>
+    </div>
+    <div id="test1" class="col m12 s12">
+      <form id="form1" runat="server">
+        <div id="mapdiv3" style="height: 600px; width: 100%; border: none; text-align: center;"></div>
+    </form>
+    </div>
+    <div id="test2" class="col m12 s12 ">
+
+       <!--Map-->
+       <!-- Stylesheets -->
+        <link href='http://fonts.googleapis.com/css?family=Maven+Pro:400,700' rel='stylesheet' type='text/css'>
+        <!--<link rel="stylesheet" type="text/css" href="/static/map/css/style.css">-->
+        <link rel="stylesheet" type="text/css" href="/static/map/mapplic/mapplic.css">
+        <link rel="stylesheet" type="text/css" href="/static/map/css/map.css">
+        <!-- Internet Explorer -->
+        <!--[if lt IE 9]>
+          <link rel="stylesheet" type="text/css" href="mapplic/mapplic-ie.css">
+          <script type="text/javascript" src="js/html5shiv.js"></script>
+        <![endif]-->
+     
+       <div class="container">
+                <!-- Map -->
+                <div id="mapplic"></div>
+        </div>
+
+        <!-- Scripts -->
+        <!--<script type="text/javascript" src="/static/map/js/jquery.min.js"></script>-->
+        <script type="text/javascript" src="/static/map/js/hammer.min.js"></script>
+        <script type="text/javascript" src="/static/map/js/jquery.mousewheel.js"></script>
+        <script type="text/javascript" src="/static/map/js/script.js"></script>
+        <script type="text/javascript" src="/static/map/mapplic/mapplic.js"></script>
+        <script type="text/javascript">
+          $(document).ready(function() {
+            $('#mapplic').mapplic({
+              source: {{world|safe}},
+              height: 600,
+              sidebar: false,
+              minimap: false,
+              fullscreen: true,
+              maxscale: 3,
+              skin: 'mapplic-dark'
+            });
+
+            $("#first").addClass( "active" );
+
+          });
+        </script>
+      
+    <!--Map/-->
+    </div>
+    
+</body>
+<script>
+    function PopulateBubbleChart() {
+
+    var json = {{skill_json|safe}}
+
+    $('#mapdiv3').empty();
+    var color = ['#cfd8dc','#b0bec5',"#90a4ae", '#607d8b']
+    try {
+        var r = 600,
+            format = d3.format(",d"),
+            colorScale = d3.scale.quantize()
+                .domain([0, 50])
+                .range(color);
+
+        var bubble = d3.layout.pack()
+            .sort(d3.descending)
+            .size([r, r])
+            .padding(2);
+
+        var vis = d3.select("#mapdiv3").append("svg")
+            .attr("width", r)
+            .attr("height", r)
+            .attr("class", "bubble");
+
+        var node = vis.selectAll("g.node")
+            .data(bubble.nodes(classes(json))
+            .filter(function (d) {
+            return !d.children;
+        }))
+            .enter().append("g")
+            .attr("class", "node")
+            .attr("transform", function (d) {
+            return "translate(" + d.x + "," + d.y + ")";
+        })
+
+        node.append("title")
+           .text(function (d) // { return d.className + ": " + format(d.value); });
+            { return d.className });
+
+        node.append("circle")
+            .attr("r", function (d) {
+            return d.r;
+        })
+            .style("fill", function (d) {
+            return colorScale(d.r);
+            //return "teal"
+        })
+            .on("click", function(d) {
+            javascript:location.href='127.0.0.1:8000/accounts/members/?q='+d.className
+        });
+           
+        node.append("text")
+            .style("font-size","12px")
+            .attr("dy", ".3em")
+            .style("color", "green")
+            .style("text-anchor", "middle")
+            .text(function (d) {
+            return d.className.substring(0, d.r / 4)
+        })
+            .on("click", function(d) {
+            javascript:location.href='http://127.0.0.1:8000/accounts/members/?q='+d.className
+        });
+    } catch (err) {
+        alert(err.message);
+    }
+
+}
+// Returns a flattened hierarchy containing all leaf nodes under the root.
+var arrClasses = [];
+
+function classes(root) {
+
+    recurse(null, root);
+    return {
+        children: arrClasses
+    };
+}
+
+function recurse(name, node) {
+    if (node.children) {
+        node.children.forEach(function (child) {
+            recurse(node.name, child);
+        });
+    } else {
+        arrClasses.push({
+            packageName: name,
+            className: node.name,
+            value: node.size,
+            sc: node.mcperpatient,
+            dispname: node.displayname
+        });
+    }
+}
+
+</script>
+
+                    </div>    
+                </div>
+            </div>
+    </div>
+
+{% endblock %}
+{% block footer_scripts %}
+{% endblock footer_scripts %}

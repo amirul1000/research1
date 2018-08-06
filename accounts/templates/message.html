@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Page
+{% endblock title %}
+
+{% block content %}
+<link rel='stylesheet' href='/static/css/day.css'>
+<script type="text/javascript" src="/static/js/day.js"></script>
+
+<div id="page">
+    <div class="container">
+        <div class="row card">
+            <div class="col-md-12">
+                <div class="inner-container">
+                    <div class="panel-heading">
+                    </div><!-- end of "panel-heading" -->
+
+                    <div class="panel-body">
+                        {% if message %}
+                            <div class="alert alert-success" role="alert"> <strong>{{message}}</div>
+                        {% endif %}
+                        <div layout="row" ng-form="demoForm">
+                        <form method="post" action="" enctype="multipart/form-data">{% csrf_token %}
+                            <b>Email:</b>
+                            {{user_profile.user.email}}
+                            <b>Info:</b>
+                            {{user_profile.contact_details}}
+
+                            <table class="table"> 
+
+                             {{ message_form.as_table }}
+                             
+                            </table> 
+
+                            <input type="hidden" name="receiver_id" value="{{receiver_id}}">
+
+                            <div class="s6 m6 l6">
+                              <div id="day-schedule"></div>
+                            </div>
+                            <!--<script src="{{ doc_root  }}/weekly-schedule/src/index.js"></script>-->
+                              <script>
+                                (function ($) {
+                                  $("#day-schedule").dayScheduleSelector({
+                                    days: [1, 2, 3, 4, 5],
+                                    interval: 60,
+                                    stringDays  : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+                                    startTime: '09:00',
+                                    endTime: '18:00'
+                                  });
+                                  $("#day-schedule").on('selected.artsy.dayScheduleSelector', function (e, selected) {
+                                    console.log(selected);
+                                       hours = $("#day-schedule").data('artsy.dayScheduleSelector').serialize();
+
+                                    //json = '{"opening":[';
+                                    data_str ='';
+
+                                    for (i = 1; i < 6; i++) {           
+                                        for (y = 0; y < hours[i].length; y++) {
+                                            //json += '{"day":'+i+',"start":"'+hours[i][y][0]+'","end":"'+hours[i][y][1]+'"},';
+                                            switch(i) {
+                                              case 1:
+                                                  trueDay = "Monday";
+                                                  break;
+                                              case 2:
+                                                  trueDay = "Tuesday";
+                                                  break;
+                                              case 3:
+                                                  trueDay = "Wednesday";
+                                                  break;
+                                              case 4:
+                                                  trueDay = "Thursday";
+                                                  break;
+                                              case 5:
+                                                  trueDay = "Friday";
+                                            }
+
+                                            data_str = data_str +' '+trueDay+' : '+hours[i][y][0]+'-'+hours[i][y][1]+'  ';
+                                        }
+                                    }
+                                    $("#id_duration").val(data_str);
+                                    //json = json.slice(0, -1) + ']}';
+                                    //alert(json);
+                                  })
+                                  /*$("#day-schedule").data('artsy.dayScheduleSelector').deserialize({
+                                    '0': [['09:30', '11:00'], ['13:00', '16:30']]
+                                  });*/
+                                })($);
+                              </script>
+                              <div style="margin-left:45%;margin-right: 45%">
+                            <p><button type="submit" class="btn btn-primary pull-right">Submit</button></p>
+                              </div>
+
+                        </form>
+                        <div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

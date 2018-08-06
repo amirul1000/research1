@@ -1,0 +1,168 @@
+
+{% load static %}
+
+<!--<div style="padding-bottom: 6px; "></div>-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<div class="container">
+
+<div class="row">
+  <nav class="navbar-from" style="background-color: rgba(255,255,255, 0.95);">
+    <div class="container-fluid nav-wrapper"  >
+        
+        <ul id="nav-mobile" class="left">
+          <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+          {% if user.is_authenticated %}
+                    <li><a href="{% url 'sciport' %}">Skills</a> </li>
+                    <!--<li><a href="{% url 'members' %}">Members</a> </li>-->
+                    <li ><a  href="{% url 'devices' %}">Devices</a> </li>
+                    <li ><a  href="{% url 'members_network' %}">Network</a> </li>
+                    <!--<li><a href="{% url 'content' %}">Wall</a> </li>-->
+            {% else %}
+            {% endif %}
+            {% if user.is_authenticated %}
+        </ul>
+
+        <ul id="nav-mobile" class="left">
+            <li>
+                    <form id="changelist-search" action="{% url 'members' %}" method="get">
+                        <div  align="center;">
+                        <table align="center;">   
+                            <tr>
+                              <td class="tdOne">
+                                <input type="text" size="20" name="q" value="{{q}}" id="searchbar" class="searchbar" autofocus  style="background-color:white;"/>
+                              </td>
+                            </tr>
+                        </table>
+                        </div>
+                   </form>
+
+                    <style>
+                          input:not([type]), #changelist-search input[type=text] { height: 46px;   }
+                          #changelist-search { margin-bottom: 0; }
+                   </style>   
+      
+                   <script>
+                   $(document).ready(function() {
+                      // $('#searchbar').attr("disabled", "disabled"); 
+
+                       var eventHandler = function(name) {
+                            return function() {                                
+                                     
+                                $("#changelist-search").submit();
+                                  //alert($("#searchbar").val());
+                            };
+                          };
+
+
+                       $('#searchbar')
+                              .selectize({
+                                      plugins: ['remove_button'],
+                                      persist: false,
+                                      create: false,
+                                      closeAfterSelect: true,
+                                      maxItems: null,
+                                      hideSelected: true,
+                                      openOnFocus: false,
+                                      closeAfterSelect: true,
+                                      maxOptions: 5,
+                                      selectOnTab: true,
+                                      valueField: 'id',
+                                      placeholder: 'Search ...',
+                                      labelField: 'title',
+                                      searchField: 'title',
+                                      options: [
+                              
+                                        ],
+                                      
+                                      onChange        : eventHandler('onChange'),                                     
+                                          });
+
+                 function load_options()
+                        {
+                                var xhr; 
+                            
+                                searchbar = $('#searchbar');  
+                                var $select = searchbar.selectize();
+                                var control = $select[0].selectize;
+                                //control.clear(); 
+                                //control.clearOptions(); 
+                               
+
+                                $("#spinner3").html('<img src="/static/spinner/indicator.gif" alt="Wait" />');               
+                               
+                                xhr && xhr.abort();
+                                    xhr = $.ajax({
+                                        url: '/accounts/search_text/',
+                                        success: function(results) {
+
+                                               var data_source = eval(results);                                    
+                                                for ( var i = 0 ; i < data_source.length ; i++ ) 
+                                                {   
+                                                    control.addOption({
+                                                                    id: data_source[i],
+                                                                    title: data_source[i],
+                                                                    url: ''
+                                                                });
+                                                }
+                                               
+                                                $("#spinner3").html('');
+
+                                        },
+                                        error: function() {
+                                             callback();
+                                        }
+                                    })
+                        }
+
+                   load_options();   
+
+                  // $('#searchbar').removeAttr("disabled");  
+
+
+                   });
+                  </script>
+
+            </li>    
+         </ul> 
+
+        <ul id="nav-mobile" class="right">
+                    {% if user.is_staff %}
+                        <li class="active"><a href="/admin/">Admin</a></li>
+                        <li class="active"><a href="{% url 'profile' %}">Profile</a></li>
+                    {% else %}
+                        <li class="active"><a href="{% url 'profile' %}">Profile</a></li>
+                    {% endif %}
+                        <li class="active"><a href="{% url 'account_logout' %}">Logout</a></li>
+
+                {% else %}
+                    <li class="active"><a href="{% url 'account_login' %}">Login</a></li>
+                    <li class="active"><a href="{% url 'account_signup' %}">Register</a></li>
+                {% endif %}
+        </ul>
+
+    </div>
+  </nav>
+</div>
+</div>
+
+<!--
+<div class="container">
+    <div class="row card black">
+        <div  class="col s12 m4 l1">
+           <form id="changelist-search" action="{% url 'members' %}" method="get">
+                <div  align="center;">
+                <table align="center;">   
+                    <tr>
+                      <td>
+                        <input type="text" size="40" name="q" value="{{q}}" id="searchbar" autofocus  style="width:400px;background-color:white;" />
+                      </td>
+                    </tr>
+                </table>
+                </div>
+           </form>
+       </div> 
+    </div>   
+</div>             
+-->

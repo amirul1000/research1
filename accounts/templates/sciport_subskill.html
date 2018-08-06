@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Profile
+{% endblock title %}
+
+{% block additional_head %}
+   
+{% endblock additional_head %}
+
+{% block content %}
+    
+  <!-- Stylesheets -->
+  <link href='http://fonts.googleapis.com/css?family=Maven+Pro:400,700' rel='stylesheet' type='text/css'>
+  <!--<link rel="stylesheet" type="text/css" href="/static/map/css/style.css">-->
+  <!-- Internet Explorer -->
+  <!--[if lt IE 9]>
+    <link rel="stylesheet" type="text/css" href="mapplic/mapplic-ie.css">
+    <script type="text/javascript" src="js/html5shiv.js"></script>
+  <![endif]-->
+
+  <div class="container">
+
+    <div class="row card" style="background-color: rgba(224,242,241, 0.9);">
+     {% load assets_static %}
+      <div class="row" align="center">
+        <div class="col m4 s12 offset-m4">
+          <div class="card mdl-grid">
+            <div class="card-action deep-orange lighten-4" align="center">
+               <b>{{skill.name}}</b>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% for each in skill.subskill_set.all %}
+        <div class="col s6 m4 l3">
+          <a href="/accounts/members/?q={{each.sub_skills}}">
+            <div align="center" style="color:black; margin:15px;`">
+              <div class="card-panel hoverable waves-effect waves-block">
+                <div>{{each.sub_skills}}</div>
+              </div>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+   </div>
+ {% endblock %}
+
+{% block footer_scripts %}
+
+ 
+
+{% endblock footer_scripts %}          

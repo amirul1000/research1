@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Page
+{% endblock title %}
+
+{% block content %}
+<div id="page">
+    <div class="container">
+         <div class="row card">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4>Device:{{qr_code}}</h4>
+                    </div><!-- end of "panel-heading" -->
+
+                    <div class="panel-body">
+                        {% if message %}
+                            <div class="alert alert-success" role="alert"> <strong>{{message}}</div>
+                        {% endif %}
+                        <form method="post" action="" enctype="multipart/form-data">{% csrf_token %}
+                            
+                            <table class="table"> 
+
+                             {{ message_form.as_table }}
+                             
+                            </table> 
+                            
+                            <div style="margin-left:45%;margin-right: 45%">
+                                <p><button type="submit" class="btn btn-primary pull-right">Submit</button></p>                            
+                                <p><button type="button" class="btn btn-primary pull-right" style="margin:5px;" 
+                                    onClick="location.href='/machine/page/{{qr_code}}/'" >Back</button>
+                                </p>
+                           </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{%load replace %}
+{%load color_text %}
+{% block title %}
+    Members - Sciport
+{% endblock title %}
+
+{% block additional_head %}
+   
+{% endblock additional_head %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="row card">
+                  <!--<div style="width:500px;float:left;">
+                         <div class="module" id="changelist">
+                          <div id="toolbar">
+                              <form id="changelist-search" method="get">
+                                <div>
+                                <table>   
+                                    <tr>
+                                      <td><input type="text" size="40" name="q" value="{{q}}" id="searchbar" autofocus  style="width:400px;" /></td>
+                                    </tr>
+                                </table>
+                                </div>
+                                </form>
+                          </div>
+                        </div>
+                      </div>-->
+                        <table class="table table-condensed table-hover" style="border-collapse:collapse;">
+                          <thead class="blue-grey lighten-1">
+                             <tr class="table-titles">
+                    <!--<td>User</td>-->  
+                            <td style="border: none; border-radius: 0; color: #fff;">Name</td>     
+                            <td style="border: none; border-radius: 0; color: #fff;">Department</td>
+                            <td style="border: none; border-radius: 0; color: #fff;">Skills</td>
+                            <td style="border: none; border-radius: 0; color: #fff;">Sub skills</td>
+                            <td style="border: none; border-radius: 0; color: #fff;">Devices</td>
+                            </tr>
+                          </thead>
+                          <tbody>
+                          {% for field in members %}
+                              <tr data-toggle="collapse" data-target="#target{{forloop.counter}}" class="accordion-toggle">
+                                 <!--<td>{{field.user}}</td>-->        
+                                   <td style="padding: auto 20px; font-size: 12px; border-right: 1px solid #e2e2e2;">{{field.user.get_full_name |safe}}</td>       
+                                   <td style="padding: auto 20px; font-size: 12px; border-right: 1px solid #e2e2e2;">{{field.department.name|color_text:q |safe}}</td>       
+                                   <td style="padding: auto 20px; font-size: 12px; border-right: 1px solid #e2e2e2;">{{field.get_skills|replace:","|color_text:q |safe}}</td>
+                                   <td style="line-height: 100%; font-size: 12px; border-right: 1px solid #e2e2e2;">{{field.get_sub_skills|replace:","|color_text:q |safe}}</td>
+                                   <td style="font-size: 12px; min-width:200px;">{{field.machine|replace:","|color_text:q |safe}}</td>       
+                              </tr>
+                              <tr >
+                                  <td colspan="6" class="hiddenRow " style="background: #f9f9f9;">
+                                  <div class="accordion-body collapse" id="target{{forloop.counter}}">
+                                  <div class=" ">
+                                  <div class="card-content">
+                                    <div class="row" style="padding: 15px 0; border-bottom: 1px solid #ddd; font-size: 14px;">  
+                                      <b>About me:</b> {{field.about_me}}
+                                    </div> 
+                                    <div class="row" style="padding: 15px 0; border-bottom: 1px solid #ddd; font-size: 14px;">  
+                                      <b>Contact details:</b> {{field.contact_details}}
+                                    </div> 
+                                    <div class="row" style="padding: 15px 0; border-bottom: 1px solid #ddd; font-size: 14px;"> 
+                                      <div class="col s4" style="padding: 0;">
+                                        <b>Research:</b> {{field.research}}  
+                                      </div>
+                                      <div class="col s4" style="padding: 0; text-align: center;">
+                                        <b>Position:</b> {{field.role}}
+                                      </div>
+                                      <div class="col s4" style="padding: 0; text-align: center;">
+                                        <b>Email: </b> {{field.user.email}}
+                                      </div>
+                                    </div> 
+                                    <div class="button-pos" style="width: 100%; text-align: center;">
+                                       <p>
+                                       <button type="button" class="btn btn-primary pull-right" style="background: #3c5da5; margin-top: 20px;" 
+                                            onClick="location.href='{% url 'contact_member_message' field.user.pk  %}'" >PROPOSE A MEETING</button>
+                                        </p>
+                                    </div>
+                                  </div>
+                                  </div>
+                                  </div>
+                                  </td>
+                              </tr>
+                          {% endfor %}    
+                          </tbody>
+                      </table>
+
+                           <div class="pagination">
+                              <span class="step-links">
+                                  {% if members.has_previous %}
+                                      <a href="?page={{ members.previous_page_number}}&q={{q}}">previous</a>
+                                  {% endif %}
+
+                                  <span class="current">
+                                      Page {{ members.number }} of {{ members.paginator.num_pages }}.
+                                  </span>
+
+                                  {% if members.has_next %}
+                                      <a href="?page={{ members.next_page_number }}&q={{q}}">next</a>
+                                  {% endif %}
+                              </span>
+                          </div>
+                        </div>
+                    </div>    
+    </div>
+{% endblock %}
+
+{% block footer_scripts %}
+  <script>
+     $(document).ready(function() {
+
+          $('.collapsible').collapsible({
+          accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+         });
+      });
+  </script>
+   
+{% endblock footer_scripts %}

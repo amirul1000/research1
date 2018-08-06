@@ -1,0 +1,412 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Profile - Sciport
+{% endblock title %}
+
+{% block additional_head %}
+
+<style>   
+
+    .selectize-input {
+      height: 62px!important;
+    }
+
+    .searchbar {
+      min-width: 300px;
+      font-size: 16px;
+    }
+
+    .collapsible-body  {
+      background: #fff;
+    }
+    .add-margin-bottom .selectize-control {
+      margin-bottom: 15px;
+    }
+</style>
+    
+    <style>
+      input[type=text],textarea{
+        background-color:white !important; 
+       }
+      
+      [type="checkbox"]:not(:checked), [type="checkbox"]:checked{    
+           position:relative !important; 
+            left: 0px !important; 
+           opacity: 1 !important; 
+      }
+      
+      select {
+          display: block !important;    
+      }
+
+      /*#id_machine{
+        height:200px;
+      }*/
+      #id_research{
+        height:100px;
+      }
+
+      .tabs a {
+        color: #ffffff !important;
+      }
+
+      .tabs .indicator {
+        background-color: #ffffff !important;
+      }
+
+    </style>
+
+
+     
+
+{% endblock additional_head %}
+
+{% block content %}
+<div id="login">
+    <div class="container" >
+        <div class="row card inner-container" style="background-color: rgba(224,242,241, 0.9);">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                    </div><!-- end of "panel-heading" -->
+
+                    <div class="panel-body">
+                   <form id="profile_selectizeForm" method="post" action="{% url 'profile' %}" >{% csrf_token %}
+                        {% for field in profile_form %}
+                            {{ field.error }}
+                        {% endfor %}
+
+                            <ul class="collapsible" data-collapsible="accordion">
+                                <li>
+                                  <div class="collapsible-header active">General</div>
+                            
+                                  <div class="collapsible-body grey lighten-3 ">
+                                    <div class="row" style="margin-left:5px;margin-right:5px; padding-top:10px;">
+                                           <P class="col s6"><label>First Name:</label>
+                                           {{ user_form.first_name }}</P>
+
+                                           <P class="col s6"><label>Last Name:</label>
+                                           {{ user_form.last_name }}</P>
+
+                                           <P class="col s6"><label>Country:</label><br>
+                                           {{ profile_form.country }}</P>
+
+                                           <P class="col s6"><label>Zip code:</label><br>
+                                           {{ profile_form.zip_code }}</P>
+                                           </div>
+                                  
+                                  </div>
+                                </li>
+
+                                <li>
+                                   <div class="collapsible-header">Specialisation</div>
+                                    
+                                    <div class="collapsible-body grey lighten-3">
+                                      <div class="row" style="margin-left:5px;margin-right:5px; padding-top:10px; padding-bottom: 10px">
+                                            <P class="col s8"><label>Department:</label><br>
+                                            {{ profile_form.department }}</P>
+
+                                            <P class="col s4"><label>Role:</label><br>
+                                            {{ profile_form.role }}</P>
+
+                                            <P class="col s12"><label>Research:</label><br>
+                                            {{ profile_form.research }}</P>
+
+                                            <P class="col s12 add-margin-bottom"><label>Devices:</label><br>
+                                            {{ profile_form.machine }}</P>
+
+                                          {{ profile_form.latitude }}
+                                          {{ profile_form.longitude }}
+                                          <div class="clearFix"></div>
+
+                                          </div>
+                            <script type="text/javascript">
+                                  $( document ).ready(function() {
+                                        $("#id_country").change(function(){
+                                            codeAddress();     
+                                        });
+
+                                        $("#id_zip_code").blur(function(){
+                                            codeAddress();     
+                                        });
+                                            
+                                       function codeAddress() {
+                                       var address =  $("#id_country :selected").text()+" , "+$("#id_zip_code").val();
+                                        $.ajax({
+                                          url: "http://maps.googleapis.com/maps/api/geocode/json?address="+address+"&sensor=false",
+                                          type: "POST",
+                                          success: function(res){
+                                             console.log(res.results[0].geometry.location.lat);
+                                             console.log(res.results[0].geometry.location.lng);
+
+                                             $("#id_latitude").val(res.results[0].geometry.location.lat);
+                                             $("#id_longitude").val(res.results[0].geometry.location.lng);   
+                                          }
+                                        });
+                                      }
+
+                                    });
+                          </script>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div class="collapsible-header ">Skills</div>
+                                  <div class="collapsible-body grey lighten-3">
+
+                                    <div class='table' id="form_set">
+                                      <table class='no_error'>
+                                        {{ skillformset.as_table }}
+                                      </table>
+                                    </div>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div class="collapsible-header">Contact Info</div>
+                                  <div class="collapsible-body grey lighten-3">
+                                    <p style="margin-right: -10% !important"><label>About me:</label><br>
+                                {{ profile_form.about_me }}<br></p>
+                            
+                              <p style="margin-right: -10% !important"><label>Contact details:</label><br>
+                                {{ profile_form.contact_details }}<br></p>
+                                  </div>
+                                </li>
+                          </ul>
+                          <div style="margin-left:43%; margin-top:20px">
+                              <!--<div id="error" style="margin-left:-10%;"></div>-->
+                              <p><button type="submit" class="btn btn-primary pull-right">Save</button>
+                              </p>
+                          </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block footer_scripts %}
+
+<script>
+$(document).ready(function() {
+     
+      $('#profile_selectizeForm').on('change', '.myskillclass', function() {
+                  var xhr; 
+                  skill = $(this).val();
+                  
+                  skill_id = $(this).attr('id');
+                  arr = skill_id.split("-");
+                  next_subskill_id = "id_skillsubskill_set-"+arr[1]+"-sub_skills";
+
+
+                  next_subskill_id = $("#"+next_subskill_id);  
+                  var $select = next_subskill_id.selectize();
+                  var control = $select[0].selectize;
+                  control.clear(); 
+                  control.clearOptions();  
+
+                  $("#spinner1").html('<img src="/static/spinner/indicator.gif" alt="Wait" />');               
+                 
+                  xhr && xhr.abort();
+                      xhr = $.ajax({
+                          url: '/accounts/subskils/'+skill+'/',
+                          success: function(results) {
+
+                                 var data_source = eval(results);                                    
+                                  for ( var i = 0 ; i < data_source.length ; i++ ) 
+                                  {
+                                      control.addOption({
+                                                      id: data_source[i].name,
+                                                      title: data_source[i].name,
+                                                      url: data_source[i].url
+                                                  });
+                                  }
+                                  $("#spinner1").html('');
+                          },
+                          error: function() {
+                               callback();
+                          }
+                      })
+      });
+        //http://www.turnongreen.com/GitHub/selectize.js/examples/api.html
+       /*$('#profile_selectizeForm') 
+       $( ".myskillclass" ).on("change", function(e){ 
+                });*/
+    
+      $('#profile_selectizeForm')
+        .find('.mysubskillclass')
+
+            .selectize({
+                    plugins: ['remove_button'],
+                    persist: false,
+                    create: true,
+                    maxItems: null,
+                    valueField: 'id',
+                    labelField: 'title',
+                    searchField: 'title',
+                    options: [
+                              
+                            ],
+                            create: true
+                        });
+
+            /*
+               {% for field in sub_skills %}
+                                 {id: '{{field}}', title: '{{field}}', url: ''},
+                               {% endfor %}
+            */
+                       
+     $('#profile_selectizeForm')
+            .find('#id_machine')
+
+                .selectize({
+                        plugins: ['remove_button'],
+                        persist: false,
+                        create: true,
+                        maxItems: null,
+                        valueField: 'id',
+                        labelField: 'title',
+                        searchField: 'title',
+                        options: [
+                                   {% for field in machine_list %}
+                                     {id: '{{field.name_of_device}}', title: '{{field.name_of_device}}', url: ''},
+                                   {% endfor %}
+                                ],
+                                create: true
+                            }); 
+
+
+    $('#profile_selectizeForm')
+            .find('#id_research')
+
+                .selectize({
+                        plugins: ['remove_button'],
+                        persist: false,
+                        create: true,
+                        maxItems: null,
+                        valueField: 'id',
+                        labelField: 'title',
+                        searchField: 'title',
+                        options: [
+                                   {% for field in research_list %}
+                                     {id: '{{field.name}}', title: '{{field.name}}', url: ''},
+                                   {% endfor %}
+                                ],
+                                create: true
+                            });             
+
+
+});
+</script>
+
+
+
+
+<!--
+<div id="modal1" class="modal" style="position:fixed;z-index: 9999;">
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.0/css/selectize.min.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.0/css/selectize.bootstrap3.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.0/js/standalone/selectize.min.js"></script>
+    <style>
+      /* input[type=text]{
+        background-color:white !important; 
+       }
+
+      [type="checkbox"]:not(:checked), [type="checkbox"]:checked{    
+           position:relative !important; 
+            left: 0px !important; 
+           opacity: 1 !important; 
+      }*/
+    </style>
+
+  <div class="modal-content">
+
+    </button>
+              <h4>Add a new Skill</h4>
+         <form id="profile_selectizeForm2" method="post" action="{% url 'profile' %}">{% csrf_token %}
+         
+         <div class='table' id="form_set">
+            <div id="spinner2"></div>   
+            <table class='no_error'>
+              {{ skill_empty_form.as_table }}
+            </table>
+          </div>
+        
+          <div style="margin-left:43%; margin-top:20px">
+            <input type="hidden" name="new_skill" value="add_new">  
+            <p><button type="submit" class="btn btn-primary pull-right" onClick="return confirm('On submisssion parent unsaved form data will be lost');">Save</button>
+            </p>
+          </div>
+        </form>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+  </div>
+    <script>
+    $(document).ready(function() {
+
+          $('#profile_selectizeForm2').on('change', '.myskillclass', function() {
+                      var xhr; 
+                      skill = $(this).val();
+                      
+                      skill_id = $(this).attr('id');
+                      arr = skill_id.split("-");
+                      next_subskill_id = "id_skillsubskill_set-"+arr[1]+"-sub_skills";
+
+                      //next_subskill_id = $("#"+next_subskill_id);  
+                      next_subskill_id = $("#"+next_subskill_id,"#profile_selectizeForm2");
+                      var $select = next_subskill_id.selectize();
+                      var control = $select[0].selectize;
+                      control.clear(); 
+                      control.clearOptions();    
+
+                       $("#spinner2").html('<img src="/static/spinner/indicator.gif" alt="Wait" />');       
+                     
+                      xhr && xhr.abort();
+                          xhr = $.ajax({
+                              url: '/accounts/subskils/'+skill+'/',
+                              success: function(results) {
+
+                                     var data_source = eval(results);                                    
+                                      for ( var i = 0 ; i < data_source.length ; i++ ) 
+                                      {
+                                          control.addOption({
+                                                          id: data_source[i].name,
+                                                          title: data_source[i].name,
+                                                          url: data_source[i].url
+                                                      });
+                                      }
+                                      $("#spinner2").html('');
+                              },
+                              error: function() {
+                                   callback();
+                              }
+                          })
+                    });
+        
+
+
+            $('#profile_selectizeForm2')
+                .find('.mysubskillclass')
+                    .selectize({
+                            plugins: ['remove_button'],
+                            persist: false,
+                            create: true,
+                            maxItems: null,
+                            valueField: 'id',
+                            labelField: 'title',
+                            searchField: 'title',
+                            options: [
+                                      
+                                    ],
+                                    create: true
+                                });
+       
+    });
+    </script>
+</div> -->
+
+{% endblock footer_scripts %}

@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}
+Page
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <div class="row card" style="background-color: rgba(224,242,241, 0.9);>
+        <div class="card-block z-depth-1" >
+                {% ifnotequal   page.working  'yes' %}
+                             <div  {% ifequal page.working  'no' %}  class="alert alert-danger deep-orange lighten-5" {% else %}    class="alert alert-warning orange lighten-4" {% endifequal %}>
+                             {{page.date_of_working}}  | <strong>Warning:</strong> <h5> {{ page.working_comments }} </h5>  
+                            </div>
+                {% endifnotequal %} 
+
+                <div class="card-columns">
+
+                      {% load assets_static %} 
+
+
+                    <div class="card grey lighten-5  text-darken-5 z-depth-2">
+                        <div class="card-content">
+                            <span class="card-title">Name</span>
+                            <br>
+                            {{page.name_of_device}}
+
+                    </div>        
+                        </div>
+
+                    <div class="card grey lighten-5 z-depth-2">
+                        <div class="card-content">
+                            <span class="card-title">Expert</span>
+                            <br>
+                            {% if  page.mentor.count > 0 %}
+                            {% for each in page.mentor.all %}
+                            {{each.first_name}} {{each.last_name}} : {{each.email}}  <br>
+                            {% endfor %}
+                         {% else %} 
+                           No experts yet
+                         {% endif %} 
+                        </div>
+                    </div>
+
+                   {% if page.uploadfiles_set.all %}
+                    <div class="card grey lighten-5  text-darken-1 z-depth-2">
+                        <div class="card-content">
+                         {% for each in page.uploadfiles_set.all %}
+                            <a href="/machine/download/{{ each.pk }}" style="margin:5px;"  class="btn waves-effect waves-light"><i class="material-icons left">cloud</i>{{ each.title }}</a>
+                        {% endfor %}
+                        </div>
+                    </div>
+                    {% else %}
+                    {% endif %}
+                    
+             
+
+                    {% if page.description %}
+                       <div class="card grey lighten-5  text-darken-1 z-depth-2">
+                        <div class="card-content">
+                            <span class="card-title">Description</span>
+                            <br>
+                            {{ page.description }}
+                        </div>
+                    </div>
+                    {% else %}
+                    {% endif %}
+
+
+                    {% if  page.web_links %}
+                    <div class="card grey lighten-5  text-darken-1 z-depth-2">
+                        <div class="card-content">
+                            <span class="card-title">Web links</span>
+                            <br>
+                            <a href="{{ page.web_links }}">{{ page.web_links }}</a>
+                        </div>
+                    </div>
+                    {% else %}
+                    {% endif %}
+
+                    {% if  page.web_links %}
+                    <div class="card grey lighten-5  text-darken-1 z-depth-2">
+                        <div class="card-content">
+                            <span class="card-title">Is functional</span>
+                            <br>
+                            {{ page.working }}
+                        </div>
+                    </div>
+                    {% else %}
+                    {% endif %}
+
+                    <div class="card grey lighten-5  text-darken-1 z-depth-2">
+                        <div class="card-content">
+
+                            <button type="submit" class="waves-effect waves-light btn" style="margin:5px;" 
+                                    onClick="location.href='/machine/page_edit/{{ page.pk }}'">Edit</button>
+                            <button type="submit" class="waves-effect waves-light btn" style="margin:5px;" 
+                                    onClick="location.href='/machine/send_message/{{ page.pk }}'">Report Problem</button>
+                            <button type="submit" class="waves-effect waves-light btn" style="margin:5px;" 
+                                    onClick="location.href='/machine/be_mentor/{{ page.pk }}'">
+                                        {% if request.user in page.mentor.all %}
+                                        stop expertise 
+                                        {% else %}
+                                        I am expert 
+                                        {% endif %}
+                                    </button>
+                            <button type="submit" class="waves-effect waves-light btn" style="margin:5px;" 
+                                    onClick="location.href='{{ page.booking_links }}'">Book Device</button>
+                               
+                            <button type="submit" class="waves-effect waves-light btn" style="margin:5px;" 
+                                    onClick="location.href='{% url 'members' %}?q={{page.name_of_device}}'">
+                                        Users
+                                    </button> 
+
+                            <!--
+                            <button type="submit" class="waves-effect waves-light btn" style="margin:5px;" 
+                            onClick="location.href='/machine/subscribe/{{ page.pk }}'">
+                            {% if request.user in page.subscriber.all %}
+                               Unsubscribe
+                            {% else %}
+                              Subscribe
+                            {% endif %}
+                            </button>
+                            -->
+
+                            </div>
+                            </div>
+
+                            {% if  page.youtube_video %}
+                            <div class="card grey lighten-5  text-darken-1">
+                                <div class="card-content">
+                                    <div id="vedio_id"></div>
+                                    <script language="javascript">
+                                     function getId(url) {
+                                        var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+                                        var match = url.match(regExp);
+
+                                        if (match && match[2].length == 11) {
+                                            return match[2];
+                                        } else {
+                                            return 'error';
+                                        }
+                                    }
+                                    var myId = getId('{{ page.youtube_video }}');
+                                    str = '<div class="video-container"><iframe height="400px" width="100%" src="https://www.youtube.com/embed/'+myId+'" frameborder="0"></iframe></div>';
+                                    $("#vedio_id").html(str);
+                                </script>
+                            </div>
+                        </div>
+                        {% else %} 
+                        {% endif %} 
+                        {% if  page.faq_set.all %}
+                        </div>
+                            <ul class="collapsible" data-collapsible="expandable">
+                            <li>
+                            <div class="collapsible-header white-text blue-grey ">
+                            Frequently Asked Questions 
+                            </div>
+                            </li>
+                            {% for each in page.faq_set.all %}
+                            <li>
+                              <div class="collapsible-header grey lighten-5
+                                text-darken-1">{{ each.quistion }}</div>
+                              <div class="collapsible-body amber lighten-5"><p> {{ each.answer }}</p></div>
+                            </li>
+                         {% endfor %}
+                        </ul>
+                        {% else %} 
+                        {% endif %} 
+                </div>
+            </div>
+    </div>
+{% endblock %}
+

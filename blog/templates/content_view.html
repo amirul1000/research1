@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Page
+{% endblock title %}
+
+{% block content %}
+<div id="page">
+    <div class="inner-container">
+                <div class="panel panel-default">
+
+                    <div class="panel-body">
+                        <form method="post" action="/blog/content_save/" enctype="multipart/form-data">{% csrf_token %}
+                             <div class="row card container">
+                                <div class="col s12 m8 l6">
+                                <table class="table"> 
+                                <br>
+
+                                 {{contentform.content_text}}
+                                 
+                                </table> 
+                               </div> 
+                             <div style="margin-left:45%; margin-top:27px;">
+                            <p><button type="submit" class="btn btn-primary pull-right" >Post</button></p>
+                            <br>
+                            </div>
+                        </form>
+                       </div>
+
+                        {% for field in contents %}
+                        <div class="container card">
+                            <div class="card-panel"> 
+                                   
+                                    <p class="section-description">{{field.content_text}}</p><br>
+                                    <div class="col s12 m12 l12">
+                                        <div class="col s12"></div>
+                                        <div class="col s4">
+                                                [{{field.poster.username}}  {{field.poster.email}}]  {{field.poster.first_name}} {{field.poster.last_name}}
+                                        </div>
+                                    </div>     
+                                 </div> 
+                                <b>Comments</b>   
+                                {% for each in field.comment_set.all %}
+
+                                    <div class="col s12 m12 l12">
+                                    <div class="card-panel grey lighten-5 z-depth-1">
+                                      <div class="row valign-wrapper">
+                                        <div class="col s2">
+                                           {{each.commenter.first_name}} {{each.commenter.last_name}} <br>
+                                           [{{each.commenter.username}}  {{each.commenter.email}}] 
+                                        </div>
+                                        <div class="col s10">
+                                          <p class="section-description">
+                                            {{ each.comment_text }} 
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div> 
+
+                                     
+
+                                {% endfor %}
+                            
+                             <form method="post" action="/blog/comment_save/" enctype="multipart/form-data">{% csrf_token %}
+                            
+                                <table class="table"> 
+                                 {{commentform.comment_text}}                                     
+                                </table> 
+                                <input type="hidden" name="content_id" value="{{field.pk}}">
+                            <p><button type="submit" class="btn btn-primary pull-right" style="margin:5px;" >Submit</button></p>
+
+                            </form>
+
+                                <br><br><br>
+                           </div>
+                        {% endfor %}
+                        <div class="pagination card container">
+                            <span class="step-links">
+                                {% if contents.has_previous %}
+                                    <a href="?page={{ contents.previous_page_number }}">previous</a>
+                                {% endif %}
+
+                                <span class="current">
+                                    Page {{ contents.number }} of {{ contents.paginator.num_pages }}.
+                                </span>
+
+                                {% if contents.has_next %}
+                                    <a href="?page={{ contents.next_page_number }}">next</a>
+                                {% endif %}
+                            </span>
+                        </div>
+                             
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Profile
+{% endblock title %}
+
+{% block additional_head %}
+   
+{% endblock additional_head %}
+
+{% block content %}
+    
+    <!-- Stylesheets -->
+    <link href='http://fonts.googleapis.com/css?family=Maven+Pro:400,700' rel='stylesheet' type='text/css'>
+    <!--<link rel="stylesheet" type="text/css" href="/static/map/css/style.css">-->
+    <link rel="stylesheet" type="text/css" href="/static/map/mapplic/mapplic.css">
+    <link rel="stylesheet" type="text/css" href="/static/map/css/map.css">
+    <!-- Internet Explorer -->
+    <!--[if lt IE 9]>
+      <link rel="stylesheet" type="text/css" href="mapplic/mapplic-ie.css">
+      <script type="text/javascript" src="js/html5shiv.js"></script>
+    <![endif]-->
+ 
+   <div class="container">
+        <div class="row card">
+          
+        <section id="map-section" class="inner over">
+          
+
+          <div class="map-container">
+            <div class="window-mockup">
+              <div class="window-bar"></div>
+            </div>
+            <!-- Map -->
+            <div id="mapplic"></div>
+          </div>
+
+         
+        </section>
+
+       
+
+      </div>
+
+     
+    </div>
+
+    <!-- Scripts -->
+    <!--<script type="text/javascript" src="/static/map/js/jquery.min.js"></script>-->
+    <script type="text/javascript" src="/static/map/js/hammer.min.js"></script>
+    <script type="text/javascript" src="/static/map/js/jquery.mousewheel.js"></script>
+    <script type="text/javascript" src="/static/map/js/script.js"></script>
+    <script type="text/javascript" src="/static/map/mapplic/mapplic.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('#mapplic').mapplic({
+          source: {{world|safe}},
+          height: 760,
+          sidebar: false,
+          minimap: false,
+          fullscreen: false,
+          maxscale: 3,
+          skin: 'mapplic-dark'
+        });
+      });
+    </script>
+  {% endblock %}
+
+{% block footer_scripts %}
+
+ 
+
+{% endblock footer_scripts %}

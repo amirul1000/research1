@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Devices - Sciport
+{% endblock title %}
+
+{% block additional_head %}
+
+  {% load assets_static %} 
+    
+{% endblock additional_head %}
+
+{% block content %}
+
+
+
+<meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+<div id="devices">
+    <div class="container">
+        <div class="row card" style="background-color: rgba(224,242,241, 0.9);">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                    </div><!-- end of "panel-heading" -->
+                    <div class="card">
+                    <div style="float:right">
+                        <a class="btn-large waves-effect waves-light deep-orange lighten-4 black-text" style="margin:15px;" onClick="openModal();">+ add device</a>
+                        <!--Add New-->
+                         <script language="javascript">
+                            function openModal()
+                            {
+                              $('#modal1').openModal();
+                              //$('#id_search').hide();
+                            }  
+                           $( document ).ready(function() {
+                          });
+                         </script>
+                  </div>
+                         <!--
+                          <div id="id_search" style="z-index:0;width:500px;">
+                             <div class="hide-on-small-only" style="width:500px;float:right;">
+                             <div class="module" id="changelist">
+                              <div id="toolbar">
+                                  <form id="changelist-search" method="get">
+                                    <div>
+                                    <table>   
+                                        <tr>
+                                          <td><input type="text" size="40" name="q" value="{{q}}" id="searchbar" autofocus  style="width:400px;" /></td>
+                                        </tr>
+                                    </table>
+                                    </div>
+                                   </form>
+                              </div>
+                            </div>
+                          </div>    
+                          </div>
+                        -->
+                           <div class="filter-active-title">Show All</div>
+                            <ul class="portfolio-filter" id="portfolio-filter" data-isotope-nav="isotope">
+                                <li data-filter=".all">All</li>
+                                <li data-filter=".tag1">tag1</li>
+                                <li data-filter=".tag2">tag2</li>
+                                <li data-filter=".tag3">tag3</li>
+                                <li data-filter=".tag4">tag4</li>
+                                <li data-filter=".tag5">tag5</li>
+                              </ul>
+                              </div>
+
+
+                            
+                            <div id="isotope" class=" isotope portfolio-items" data-isotope-item-space="0.8" data-isotope-mode="masonry" data-isotope-col="4" data-isotope-item=".portfolio-item">
+                                        
+	                         {% for field in machines %}
+                              <a href="/machine/page/{{field.name_of_device}}/">
+                                  <div class="z-depth-3 white portfolio-item all  {{field.tag}}">
+                                            <div class="portfolio-image waves-effect waves-blockeffect">
+                                              {% if  field.profile_picture %}
+                                                 <img class="" src="/{{field.profile_picture|assets_static:"assets"}}" style='height: 100%; width: 100%; object-fit: contain'>
+                                              {% endif %} 
+                                            </div>
+                                            <div style="margin:10px;">
+                                            <div class="portfolio-description">
+                                                <h5 class="title">{{field.name_of_device}}</h5>
+                                                <p><i class="fa fa-tag"></i>{{field.department}}</p>
+                                            </div>
+                                            <div class="portfolio-details black-text" style="font-size: 13px;">
+                                                <p>{{field.short_description}}</p>
+                                            </div>
+                                            </div>
+                                        </div>
+                              </a>
+	                         {% endfor %}
+                           </div>
+                       
+                           <div class="pagination">
+            							    <span class="step-links">
+            							        {% if machines.has_previous %}
+            							            <a href="?page={{ machines.previous_page_number }}&q={{q}}">previous</a>
+            							        {% endif %}
+            							        <span class="current">
+            							            Page {{ machines.number }} of {{ machines.paginator.num_pages }}.
+            							        </span>
+            							        {% if machines.has_next %}
+            							            <a href="?page={{ machines.next_page_number }}&q={{q}}">next</a>
+            							        {% endif %}
+            							    </span>
+            							</div>
+                        </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+{% endblock %}
+{% block footer_scripts %}
+
+  <script>
+$(document).ready(function() {
+
+     var eventHandler = function(name) {
+          return function() {
+
+              $("#changelist-search").submit();
+
+                //alert($("#searchbar").val());
+          };
+        };
+
+     $('#searchbar')
+            .selectize({
+                    plugins: ['remove_button'],
+                    persist: false,
+                    create: false,
+                    closeAfterSelect: true,
+                    maxItems: null,
+                    hideSelected: true,
+                    openOnFocus: false,
+                    closeAfterSelect: true,
+                    maxOptions: 3,
+                    selectOnTab: true,
+                    valueField: 'id',
+                    placeholder: 'Search ...',
+                    labelField: 'title',
+                    searchField: 'title',
+                    options: [
+                               {% for field in seelctize %}
+                                 {id: '{{field}}', title: '{{field}}', url: ''},
+                               {% endfor %}
+                            ],
+                    onChange        : eventHandler('onChange'),
+                    /*onItemAdd       : eventHandler('onItemAdd'),
+                    onItemRemove    : eventHandler('onItemRemove'),
+                    onOptionAdd     : eventHandler('onOptionAdd'),
+                    onOptionRemove  : eventHandler('onOptionRemove'),
+                    onDropdownOpen  : eventHandler('onDropdownOpen'),
+                    onDropdownClose : eventHandler('onDropdownClose'),
+                    onFocus         : eventHandler('onFocus'),
+                    onBlur          : eventHandler('onBlur'),
+                    onInitialize    : eventHandler('onInitialize'),*/
+
+                        });
+});
+</script>
+<!-- Modal Structure -->
+<div id="modal1" class="modal" style="position:fixed;z-index: 9999;">
+  <div class="modal-content">
+
+    </button>
+              <h4>Add a new device</h4>
+         <form method="post" href="" enctype="multipart/form-data">{% csrf_token %}
+         
+         <div class="form-group">
+              <label>Name of device</label>
+              {{ page_form.name_of_device }}
+          </div>
+
+          <div class="form-group">
+              <label>Department</label>
+              {{ page_form.department }}
+          </div>
+         <!--
+          <table class="table"> 
+           {{ page_form.as_table }}
+          </table> 
+          <table class="table">
+                 {{ faqformset.as_table }}
+          </table>  
+        -->
+          <input type="hidden" name="new_machine" value="add_new">  
+          <p><button type="submit" class="btn btn-primary pull-right" style="margin:5px;" >Create</button>
+          </p>
+        </form>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+  </div>
+
+</div> 
+{% endblock footer_scripts %}

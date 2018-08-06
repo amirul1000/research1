@@ -1,0 +1,257 @@
+{% load static %}
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>
+        {% block title %}
+            Sciport
+        {% endblock title %}
+    </title>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+    <script type="text/javascript" src="/static/js/selectize.js"></script>
+    <link rel='stylesheet' href='/static/css/selectize.css'>
+    <link rel='stylesheet' href='/static/css/cards.css'>
+    <link rel='stylesheet' href='/static/css/collapse.css'>
+    <link rel='stylesheet' href='/static/css/alert.css'>
+    <link rel='stylesheet' href='/static/css/particles2.css'>
+
+    <!-- mansonary grid of machine page -->
+    <link rel='stylesheet' href='/static/css/custom.css'>
+    <script type="text/javascript" src="/static/js/plugins.js"></script>
+    <script type="text/javascript" src="/static/js/theme-functions.js"></script>
+    <!-- end mansonary -->
+    <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/js/bootstrap.min.js" integrity="sha384-VjEeINv9OSwtWFLAtmc4JCtEJXXBub00gtSnszmspDLCtC0I4z4nqz7rEFbIZLLU" crossorigin="anonymous"></script>
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+    <!-- Material design icons-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    {% block additional_head %}
+    {% endblock additional_head %}
+
+</head>
+
+
+
+<style>
+
+  /* -------------------- From blue.css -----------*/
+  .portfolio-filter {
+    margin: 0;
+    display: flex;
+  }
+  @media only screen and  (max-width: 630px) {
+    .portfolio-filter {
+      display: inline;
+    }
+  }
+  .portfolio-filter li {
+    color: black !important;
+    font-weight: normal;
+    font-size: 1rem;
+    border-radius: 0;
+    padding: 23px !important;
+  }
+  .portfolio-filter li.ptf-active, .portfolio-filter li:hover {
+    color: black !important;
+  }
+  .portfolio-filter li.ptf-active {
+    background-color: rgba(0,0,0,0.1);
+  }
+  .portfolio-filter li:hover {
+    background-color: rgba(0,0,0,0.03);
+  }
+  .btn-large {
+    margin: 7px !important;
+  }   
+  /* --------------- From theme-elements.css ----------- */
+  body:not(.device-lg):not(.device-md) .filter-active-title {
+      display: none;
+  }
+  .filter-active-title {
+    float: right;
+    padding: 10px 0;
+    position: relative;
+  }
+  .portfolio-filter li, .portfolio-filter .filter-active-title {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    -webkit-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+  }  
+  .portfolio-item, .portfolio-item img {
+    display: block;
+    height: auto !important;
+  }
+  .portfolio-item {
+    /*position: relative;*/  
+    float: left;
+  }
+  .portfolio-item img {
+    width: 100%;
+  }
+  
+  .portfolio-item .portfolio-description {
+    color: #000;
+    float: left;
+    font-size: 11px;
+    text-align: left;
+  }
+  .portfolio-item .portfolio-date i, .portfolio-item .portfolio-description i {
+    margin-right: 6px;
+  }
+  .portfolio-item .portfolio-details {
+    clear: both;
+    display: block;
+  }
+ 
+  .tdOne {
+    padding:1.5px !important;
+
+  }
+
+    .searchbar {
+      display: none;
+    }
+
+     @media only screen and (min-width: 600px) {
+      .searchbar {
+      min-width: 150px;
+      display: block;
+    }
+    }
+
+    @media only screen and (min-width: 750px) {
+      .searchbar {
+      min-width: 300px;
+    }
+    }
+
+    @media only screen and (min-width: 1000px) {
+      .searchbar {
+      min-width: 500px;
+    }
+    }
+
+
+    .container {
+      margin: 0 auto;
+      max-width: 1280px;
+      width: 98%;
+    }
+
+  
+
+    @media only screen and (min-width: 601px) {
+      .container {
+        width: 98%;
+      }
+    }
+
+    @media only screen and (min-width: 1900px) {
+      .container {
+        width: 70%;
+      }
+    }
+
+    .container .row {
+      margin-left: -0.75rem;
+      margin-right: -0.75rem;
+    }
+
+    .inner-container{
+      padding-bottom: 5px;
+      padding-right:5%;
+      padding-left:5%;
+    }
+
+    @media only screen and (min-width: 1000px) {
+    .inner-container {
+      padding-top:5px;
+      padding-right:20%;
+      padding-left:20%;
+  }
+}
+     ul li a{
+      color: black;
+    } 
+    
+    nav ul li a:hover {
+      text-decoration: none;
+      color: black;
+    }
+
+    .card-columns {
+        column-count: 1;
+      }  
+      
+      @media only screen and (min-width: 1000px) {
+      .card-columns {
+        column-count: 2;
+      }
+
+    .row {
+        margin-bottom: 0px;
+    }
+
+    select {
+            display: block !important; 
+    }
+
+    .ui-select-choices {
+        top: auto;
+        left: auto;
+        width: inherit;
+      }
+
+    .selectize-input {
+        white-space: nowrap;
+      }  
+
+     body{
+            background: #16222A; /* fallback for old browsers */
+     }
+     html {
+      overflow-y: scroll;
+    }
+
+    .hiddenRow {
+        padding: 0 !important;
+    }
+</style>
+
+    <div class="wrapper">
+        <div id="header">
+
+            {% block navigation %}
+                {% include "navigation.html" %}
+            {% endblock %}
+        </div> <!-- end of header -->
+
+        <div id="content">
+            {% block content %}
+
+            {% endblock content %}
+        </div> <!-- end of content -->
+
+    </div> <!-- end of wrapper -->
+
+    
+      
+    {% block footer_scripts %}
+    {% endblock footer_scripts %}
+
+       {% block topbar %}
+                {% include "topbar.html" %}
+       {% endblock topbar %} 
+  
+</body>
+</html>

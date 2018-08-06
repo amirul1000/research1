@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Documentation - Mapplic jQuery</title>
+	
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="stylesheet" type="text/css" href="css/github.highlight.css">
+</head>
+<body>
+	<div id="wrap">
+
+		<header id="header">
+			<div class="inner">
+				<h2 class="right">jQuery Version</h2>
+				<a href="#changelog" class="version">v4.0</a>
+				<a id="logo" href="./"></a>
+			</div>
+		</header>
+
+		<section class="gray">
+			<div class="inner">
+				<h1>Documentation</h1>
+				<p>Thank you for purchasing <a href="http://www.mapplic.com/plugin" target="_blank" title="Mapplic">Mapplic jQuery</a>, the ultimate plugin for creating custom interactive maps using simple images (JPG, PNG) or vector graphics (SVG). Here you can find information about using and customizing the plugin. If you need anything that is beyond this documentation, feel free to get in touch through the <a href="http://codecanyon.net/user/sekler#contact">CodeCanyon profile page</a>.</p>
+			</div>
+		</section>
+
+		<div id="content" class="with-sidebar">
+			<div class="sidebar-holder">
+				<div id="sidebar">
+					<ul>
+						<li><a href="#files">Files</a></li>
+						<li><a href="#getting-started">Getting Started</a></li>
+						<li><a href="#options">Options</a></li>
+						<li>
+							<a href="#data-structure">Data Structure</a>
+							<ul>
+								<li><a href="#data-attributes">Attributes</a></li>
+								<li><a href="#x-y-coordinates">X and Y coordinates</a></li>
+								<li><a href="#geolocation">Geolocation</a></li>
+							</ul>
+						</li>
+						<li>
+							<a href="#creating-map">Creating SVG Map</a>
+							<ul>
+								<li><a href="#creating">New document</a></li>
+								<li><a href="#drawing">Drawing map</a></li>
+								<li><a href="#saving">Saving map</a></li>
+							</ul>
+						</li>
+						<li><a href="#customization">Customization</a></li>
+						<li><a href="#api">API</a></li>
+						<li>
+							<a href="#others">Others</a>
+							<ul>
+								<li><a href="#changelog">Changelog</a></li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<section id="files" class="section">
+				<div class="inner">
+					<h1>Files</h1>
+					<hr>
+					<p>After purchasing <strong>Mapplic - Custom Interactive Map jQuery Plugin</strong>, a ZIP file can be downloaded from CodeCanyon. This compressed file contains the following two folders:</p>
+					<ul>
+						<li><p><strong>docs</strong> - documentation, a detailed user guide and an SVG map tutorial on creating Mapplic compatible maps</p></li>
+						<li><p><strong>html</strong> - plugin files with the required libraries, all the built-in and demo maps</p></li>
+					</ul>
+					<h2>Update</h2>
+					<p>Mapplic comes with free, lifetime updates. Customers can always download the latest version from the <a href="http://codecanyon.net/downloads">CodeCanyon Downloads Page</a> (must be logged in). We will send out notifications on every major update.</p>
+				</div>
+			</section>
+
+			<section id="getting-started" class="section">
+				<div class="inner">
+					<h1>Getting Started</h1>
+					<hr>
+					<h2>Why do we need .json files?</h2>
+					<p>Mapplic separetes <strong>map graphics</strong> from <strong>map data</strong>. Graphics are the actual image or vector files, while map data describes everything what's on the map: <strong>categories</strong>, <strong>floors</strong> and <strong>landmarks</strong>.</p>
+					<p>We came up with this unique solution to prevent embedding map data into html or javascript files. Don't worry, these are simple and raw text files, editable with any txt editor.</p>
+					<h2>Setting up your first map</h2>
+					<p>The easiest way to get started with the plugin is editing one of the included demo <i>.html</i> and <i>.json</i> files. For example, if you need a United States map, try editing the attributes found in <i>usa.json</i> and see what happens if you access usa.html (<a href="#missing-invalid-error">through web server</a>). The next step could be setting up a new landmark by duplicating an existing location block and editing the attribute values.</p>
+					<p>In order to import Mapplic into an existing project, you must include the following CSS and JavaScript files:</p>
+					<pre><code>&lt;!-- Stylesheets (head section) --&gt;
+&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;mapplic/mapplic.css&quot;&gt;
+
+&lt;!-- Scripts (after closing body tag) --&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;js/jquery.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;js/hammer.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;mapplic/mapplic.js&quot;&gt;&lt;/script&gt;</code></pre>
+					<p id="missing-invalid-error" class="note">The plugin is using AJAX for loading map data, which is not allowed in some browsers for <strong>local files</strong> due to security reasons and you may get this error message: <strong>"Data file missing or invalid"</strong>. The solution is using a <strong>web server</strong>, it can be either a hosted web server environment or a local solution like XAMPP or MAMP.</p>
+				</div>
+			</section>
+
+			<section id="options" class="section">
+				<div class="inner">
+					<h1>Options</h1>
+					<hr>
+					<p>As any jQuery plugin, Mapplic has to be called on the page at some point. The function is <strong>.mapplic()</strong> and it takes a list of optional settings as the first parameter.</p>
+					<pre><code>/* Initializing the plugin on the div with id="mapplic" */
+$('#mapplic').mapplic({
+	source: 'map-data.json',
+	height: 480,
+	minimap: false,
+	sidebar: true,
+	hovertip: true,
+	developer: false,
+	maxscale: 3
+});</code></pre>
+					<h2>Full list of options (<i>default value</i>)</h2>
+					<ul>
+						<li><p><strong>source</strong> (<i>'location.json'</i>) - path to data JSON file or inline JSON object. This path is relative to the HTML file. To use the default value, the data file must have the name 'locations.json', located in the same folder as the index file. Use inline JSON objects if the application is not running on web server (see canada.html for example).</p></li>
+
+						<li><p><strong>height</strong> (<i>420</i>) - height of the component in pixels. The plugin will always take up the available horizontal space, so the width is equal to the parent's width.</p></li>
+
+						<li><p><strong>landmark</strong> (<i>null</i>) - enables Landmark Mode: the map will be focused to the location with ID set as value when the page loads.</p></li>
+
+						<li><p><strong>mapfill</strong> (<i>false</i>) - the map fills the container if true, otherwise the map will fit into the container, as the default behavior.</p></li>
+
+						<li><p><strong>markers</strong> (<i>true</i>) - can be used to disable dynamic markers (pins) on the map.</p></li>
+
+						<li><p><strong>minimap</strong> (<i>true</i>) - enable/disable minimap. Paths to minimap image(s) are set in the .json file.</p></li>
+
+						<li><p><strong>sidebar</strong> (<i>true</i>) - enable/disable sidebar, containing search field and the list of locations.</p></li>
+
+						<li><p><strong>search</strong> (<i>true</i>) - enable/disable search field. It only has meaning if the sidebar is enabled.</p></li>
+
+						<li><p><strong>lightbox</strong> (<i>false</i>) - enable/disable lightbox. The lightbox will only work if the magnific-popup js and css files are loaded.</p></li>
+
+						<li><p><strong>deeplinking</strong> (<i>true</i>) - enable/disable deeplinking feature: every location has it's own URL.</p></li>
+
+						<li><p><strong>clearbutton</strong> (<i>true</i>) - show/hide clear button (bottom left corner of the map).</p></li>
+
+						<li><p><strong>zoombuttons</strong> (<i>true</i>) - show/hide zoom (+/-) buttons (bottom left corner of the map).</p></li>
+
+						<li><p><strong>hovertip</strong> (<i>{ desc: false }</i>) - false will entirely disable the hover tooltip. Setting <i>desc: true</i> will show the description as well.</p></li>
+
+						<li><p><strong>tooltip</strong> (<i>{ thumb: true, desc: true, link: true }</i>) - parts of the tooltip can be enabled/disabled: thumbnail, description and link button.</p></li>
+
+						<li><p><strong>smartip</strong> (<i>true</i>) - enable/disable smart (always visible) tooltip.</p></li>
+
+						<li><p><strong>mousewheel</strong> (<i>true</i>) - enable/disable mousewheel zoom.</p></li>
+
+						<li><p><strong>fullscreen</strong> (<i>false</i>) - show/hide fullscreen button (top left corner of the map).</p></li>
+
+						<li><p><strong>developer</strong> (<i>false</i>) - enable/disable developer mode: displaying coordinates of the cursor.</p></li>
+
+						<li><p><strong>fillcolor</strong> (<i>'#4d5e6d'</i>) - the default hex color of interactive elements and colorable pins. Location's <i>fill</i> attribute can override this. Use blank string ('') for no fill.</p></li>
+
+						<li><p><strong>action</strong> (<i>'tooltip'</i>) - the default action to perform when a location is focused. Location's <i>action</i> attribute can override this. Currently supported action types are <i>tooltip</i>, <i>open-link</i>, <i>open-link-new-tab</i>, <i>lightbox</i> and <i>none</i>.</p></li>
+
+						<li><p><strong>maxscale</strong> (<i>4</i>) - float value indicating the maximum zoom level. For example, for a file with 600x400 dimensions when it fits, and the limit is set to 2, the maximum zoom will be 1200x800.</p></li>
+
+						<li><p><strong>skin</strong> (<i>''</i>) - apply a user interface skin. Currently the only available option is <i>'mapplic-dark'</i>.</p></li>
+
+						<li><p><strong>zoom</strong> (<i>true</i>) - enable/disable zoom feature. When disabled, the map will automatically zoom out if tooltips are closed.</li>
+					</ul>
+				</div>
+			</section>
+
+			<section id="data-structure" class="section">
+				<div class="inner">
+					<h1>Data Structure</h1>
+					<hr>
+					<p>Mapplic has its own clean JSON data structure. It is simple text, you can use any text editor and no coding knowledge is required! The easiest way to get familiar with properties and attributes is by examining examples, if you need something that can be found in one of the previews, open the demo .json and see how it is done.</p>
+					<pre><code>{
+  "mapwidth": "2000",
+  "mapheight": "2000",
+  "categories": [
+    {
+      "id": "furniture",
+      "title": "Furniture",
+      "color": "#4cd3b8",
+      "show": "false"
+    }
+  ],
+  "levels": [
+    {
+      "id": "lower",
+      "name": "0",
+      "title": "Lower floor",
+      "map": "images/apartment/lower.jpg",
+      "minimap": "images/apartment/lower-small.jpg",
+      "locations": [
+        {
+          "id": "coffeetable",
+          "title": "Coffee Table",
+          "description": "This is an awesome coffee table.",
+          "category": "furniture",
+          "x": "0.2050",
+          "y": "0.4660",
+          "zoom": "3"
+        },
+        {
+          "id": "diningtable",
+          "title": "Dining Table",
+          "description": "Dining table for 8.",
+          "category": "furniture",
+          "link": "http://codecanyon.net/user/sekler?ref=sekler",
+          "x": "0.4746",
+          "y": "0.2883"
+        }
+      ]
+    }
+  ]
+}</code></pre>
+
+					<div class="note">
+						<p>The plugin only works if your JSON is valid. A validator like <a href="http://jsonformatter.curiousconcept.com/" title="JSON validator">this one</a> might come handy in finding issues. Common mistakes are:</p>
+						<ul>
+							<li><p>having a comma after the last element of an array (<i>[{},]</i>)</p></li>
+							<li><p>not using quotation marks (<i>""</i>) for attribute keys and/or values</p></li>
+						</ul>
+					</div>
+
+					<div id="data-attributes" class="section">
+						<h2>Attributes</h2>
+						<p>Below you can find the full list of attributes. Attributes not marked as <i>(optional)</i> are <strong>required</strong>!</p>
+						<ul>
+							<li><p><strong>mapwidth</strong> - width of the map file(s) in pixels.</p></li>
+							<li><p><strong>mapheight</strong> - height of the map file(s) in pixels.</p></li>
+							<li><p><strong>bottomLat</strong> <i>(optional)</i> - map file's bottommost latitude</p></li>
+							<li><p><strong>leftLng</strong> <i>(optional)</i> - map file's leftmost longitude</p></li>
+							<li><p><strong>topLat</strong> <i>(optional)</i> - map file's topmost latitude</p></li>
+							<li><p><strong>rightLng</strong> <i>(optional)</i> - map file's rightmost longitude</p></li>
+							<li>
+								<strong><p>categories []</strong> <i>(optional)</i> - list of categories. It can be completely skipped if there is no need for categories.</p>
+								<ul>
+									<li><p><strong>id</strong> - unique ID of the category.</p></li>
+									<li><p><strong>title</strong> - title of the category, displayed in the sidebar.</p></li>
+									<li><p><strong>icon</strong> <i>(optional)</i> - path to an icon file, displayed in the sidebar.</p></li>
+									<li><p><strong>color</strong> <i>(optional)</i> - color of the category, the default color is gray.</p></li>
+									<li><p><strong>show</strong> <i>(optional)</i> - default value is true. Setting it to false will make the category collapsed by default.</p></li>
+								</ul>
+							</li>
+							<li>
+								<p><strong>levels []</strong> - list of levels (floors). At least one level is required for a working map.</p>
+								<ul>
+									<li><p><strong>id</strong> - unique ID of the level.</p></li>
+									<li><p><strong>title</strong> - title of the level, displayed on the level switcher (top left).</p></li>
+									<li><p><strong>map</strong> - path to the map file, relative to the HTML file.</p></li>
+									<li><p><strong>minimap</strong> <i>(optional)</i> - path to the minimap file, relative to the HTML file. The minimap must be enabled in the <a href="#options">Options</a> to work.</p></li>
+									<li><p><strong>show</strong> - setting it to tue  will make the level selected by default.</p></li>
+									<li><p><strong>locations []</strong> - list of locations on the level.</p>
+										<ul>
+											<li><p><strong>id</strong> - unique ID of the location. This will appear in the deeplinking URL and you can link a location with an SVG element using this field.</p></li>
+											<li><p><strong>title</strong> - title of the location, displayed in sidebar and popup.</p></li>
+											<li><p><strong>about</strong> <i>(optional)</i> - short text displayed in the sidebar.</p></li>
+											<li><p><strong>description</strong> <i>(optional)</i> - description displayed in the popup, html elements supported.</p></li>
+											<li><p><strong>pin</strong> <i>(optional)</i> - type of the pin. This string will be applied as CSS class, so you can add your own styles. Red is the default value. Built-in pins are <i>orange</i>, <i>yellow</i>, <i>green</i>, <i>blue</i>, <i>purple</i>, <i>circle</i>, <i>circular</i>, <i>transparent</i>, <i>iconpin</i>. Set it to <i>hidden</i> for no pin.</p>
+											<p>Some of the pins can have further modifiers: <i>pin-md</i> (medium size), <i>pin-lg</i> (large-size), <i>pin-xl</i> (extra large size), <i>pin-label</i> (pin with label), <i>pin-pulse</i> (pulsing effect).</p>
+											<p>For icon pins you also have to add "fa" and "fa-[icon-name]". You can find the full list <a href="http://fortawesome.github.io/Font-Awesome/icons/">here</a>.</p></li>
+											<li><p><strong>label</strong> <i>(optional)</i> - label displayed on the pin. Max 2-4 characters are supported depending on the size of the pin. <i>pin-label</i> must be added to the pin attribute (see above) for this to work.</p>
+											<li><p><strong>category</strong> <i>(optional)</i> - ID of the category the location belongs to. There must be a category with this ID.</p></li>
+											<li><p><strong>link</strong> <i>(optional)</i> - an internal or external link assigned to the location. The <i>action</i> attribute specifies how this will be used. A "More" button appears in the tooltip by default.</p></li>
+											<li><p><strong>fill</strong> <i>(optional)</i> - hex color of the interactive element/colorable pin. If not set, the <i>fillcolor</i> option's value will be used as default.</p><o></li>
+											<li><p><strong>action</strong> <i>(optional)</i> - the action to perform when the location is focused. It can be <strong>tooltip</strong> to use a tooltip (default), <strong>open-link</strong> to automatically redirect to the URL from <i>link</i> attribute, <strong>open-link-new-tab</strong> to open link in a new tab, <strong>lightbox</strong> to use lightbox as popup or <strong>none</strong> for zooming only.</p><p>If not set, the <i>action</i> option's value will be used as default.</p></li>
+											<li><p><strong>thumbnail</strong> <i>(optional)</i> - path to the thumbnail image, relative to the HTML file. Thumbnails are displayed in sidebar and tooltip if enabled.</p></li>
+											<li><p><strong>x</strong> - x position of the location. See <a href="#x-y-coordinates">X and Y coordinates</a> for more information.</p></li>
+											<li><p><strong>y</strong> - y position of the location. See <a href="#x-y-coordinates">X and Y coordinates</a> for more information.</p></li>
+											<li><p><strong>lat</strong> <i>(optional)</i> - latitude of the location, if <a href="#geolocation">geolocation</a> is supported</p></li>
+											<li><p><strong>lng</strong> <i>(optional)</i> - longitude of the location, if <a href="#geolocation">geolocation</a> is supported</p></li>
+											<li><p><strong>zoom</strong> <i>(optional)</i> - target zoom level when the location is focused. The default value is 4.</p></li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+
+					<div id="x-y-coordinates" class="section">
+						<h2>X and Y coordinates</h2>
+						<p>Mapplic's coordinate system is based on rational numbers from 0 to 1. As X increases, the position changes from left to right. As Y increases, the position changes from top to bottom. So x = 0.5, y = 0.5 is always the exact center of a map.</p>
+						<h4>To easily find coordinates of a location:</h4>
+						<ol>
+							<li><p>Set the developer option <strong>true</strong> and a small box showing the cursors positon will appear at the top of the map.</p></li>
+							<li><p>Move your cursor over the desired location and copy the displayed x and y coordinates into your data file.</p></li>
+						</ol>
+					</div>
+
+					<div id="geolocation" class="section">
+						<h2>Geolocation</h2>
+						<p>New feature introduced in Mapplic version 4.0, allows using real latitude and longitude coordinates for positioning landmarks. It only works with maps specially created to support this feature (for example netherlands.html). We are constantly adding new maps with geolocation support to our map base.</p>
+						<h4>A map is geolocation compatible if:</h4>
+						<ul>
+							<li><p>Borders of the map file (bottom latitude, left longitude, top latitude and right longitude) are defined through the <i>bottomLat</i>, <i>leftLng</i>, <i>topLat</i> and <i>rightLng</i> JSON <a href="#data-attributes">attributes</a>.</p></li>
+							<li><p>The projection of the map is <strong>Web Mercator (EPSG:3857)</strong>, also called Google Web Mercator or WGS 84/Pseudo-Mercator, which is the standard projection for maps on the web.</p></li>
+						</ul>
+						<p>If the above requirements are met, you can use the <i>lat</i> and <i>lng</i> location attributes to poistion a landmark. You can easily get the lat/lng coordinates of a place using right-click, "What's here" on Google Maps.</p>
+					</div>
+
+				</div>
+			</section>
+
+			<section id="creating-map" class="section">
+				<div class="inner">
+					<h1>Creating SVG Map</h1>
+					<hr>
+					<p>Creating a new map or making an existing one compatible with Mapplic requires a few simple steps. It's nothing more than simple naming and grouping convetions.</p>
+					<p>We are using Adobe Illustrator CC in this tutorial, however older versions of Illustrator can also be used. <a href="https://inkscape.org/" target="_blank" title="Inkscape">Inkscape</a> is a free alternative for creating vector graphics, but due to its popularity, the steps are presented in Adobe Illustrator.</p>
+					<h3>Walkthrough</h3>
+					<iframe src="https://www.screenr.com/embed/ZstN" width="650" height="396" frameborder="0"></iframe>
+					<p>The above video is a walkthrough of creating a simple SVG maps with interactive elements. In the next section each step is explained in detail.</p>
+					<div id="creating" class="section">
+						<h2><span>1</span> Creating New Document</h2>
+						<p>Open Illustrator and create a <strong>New Document</strong>. Give your document a name, make sure the Units are set to <strong>Pixels</strong> and choose the desired dimensions (width and height).</p>
+						<img class="centered" src="img/new-document.png" alt="New Document">
+						<p>Press OK, and an empty, white canvas will appear.</p>
+					</div>
+					<div id="drawing" class="section">
+						<h2><span>2</span> Drawing the map</h2>
+						<p>The next step would be the actual drawing of the map. You can always add or edit content, so if it's your first time creating a map, experiment with a few simple shapes, you can add complex drawings later.</p>
+
+						<img class="centered" src="img/svg-grouping.png" alt="SVG Grouping">
+
+						<h4 id="mapplic-compatible">Either you've drawn a new map or trying to make an existing one Mapplic compatible, continue from here.</h4>
+
+						<p>The correct <strong>grouping and naming</strong> of the SVG elements is <strong>very important</strong>, it is used by the plugin to identify elements with different behavior (for example the interactive elements of the map). For creating groups and naming elements use the <i>Layers tool (F7)</i>. There are three types of elements:</p>
+
+						<h3>Common elements (environment)</h3>
+						<p>The first type is the common elements. These will be the elements on the map without interactivity. You are free to draw all kinds of shapes or add images without any naming or grouping conventions. In general the environment is non interactive so we're using common elements. On the walkthrough video this would be the <i>base</i>.</p>
+
+						<h3>Interactive elements (landmarks)</h3>
+						<p>We will refer to the interactive elements of the map as "landmarks". Every named, direct child of a group having a name starting with <strong>landmarks</strong> is considered a landmark. So create interactive elements as follows.</p>
+						<ol>
+							<li>
+								<p>Create a new group. The name of the group MUST start with "landmarks" and cannot contain spaces.</p>
+								<p>Correct: <i>landmarks-test</i>, <i>landmarks-deparment-shops</i>, <i>landmarks-lots</i></p>
+								<p>Incorrect: <i class="stirke">landmark</i>, <i class="stirke">test_landmarks</i>, <i class="stirke">lndmarklots</i></p>
+							</li>
+							<li>
+								<p>Select the shapes you want to make interactive and move them to the first level of the newly created group, make sure there are no nested groups.</p>
+							</li>
+							<li>
+								<p>Name each landmark with a unique identifier. The names cannot contain spaces! When you will be adding your landmark in your .json data file, you will have to use the same ID for the landmark. The <strong>landmark data and SVG shape is connected through this ID</strong> so make sure it's UNIQUE!</p>
+							</li>
+						</ol>
+
+						<h3>Nopointer elements (logos/captions)</h3>
+						<p>Sometimes an overlaying element might block the interactivity, for example logos or captions over a landmark. This is where nopointer elements come handy. If an element's or its parent's (direct or indirect) name starts with <strong>nopointer</strong>, it will be ignored by the mouse pointer.</p>
+					</div>
+					<div id="saving" class="section">
+						<h2><span>3</span> Saving the Map</h2>
+						<p>To save your map as .svg, use the <i>File > Save As</i> option, select the type <strong>SVG (*.SVG)</strong>.</p>
+						<img class="centered" src="img/save-document.png" alt="Save Document">
+						<p class="nomargin">It is advised to:</p>
+						<ul>
+							<li><p>set at least 2 for the <i>Decimal Places.</i></p></li>
+							<li><p><i>Link</i> images (if there is any) instad of embedding.</p></li>
+							<li><p>use <i>Presentation Attributes</i> for CSS Properties if the map has more floors.</p></li>
+						</ul>
+						<p>With some basic Illustrator skills, anyone can create a Mapplic compatible interactive vector map within minutes. If you have any further questions please get in touch using this <a href="http://codecanyon.net/user/sekler?ref=sekler#contact">contact form</a>.</p>
+					</div>
+				</div>
+			</section>
+
+			<section id="customization" class="section">
+				<div class="inner">
+					<h1>Customization</h1>
+					<hr>
+					<p>In some cases your project might require changes that are not possible through simple <a href="#options">options</a> and <a href="#data-attributes">attributes</a>. We will go through a few commonly requested modifications. If you need further customization, feel free to get in touch, we are available for custom work.</p>
+					<p>There are three files you might need to edit: <i>mapplic/mapplic.js</i>, <i>mapplic/mapplic.css</i> and <i>css/map.css</i>. To make your CSS changes future proof, it's strongly advised to write the changes in <i>css/map.css</i>, even if the selector already exists.</p>
+					<div id="right-sidebar">
+						<h3>Right sidebar</h3>
+						<p>The <strong>.mapplic-sidebar</strong> is floated to left by default. Moving the sidebar to right couldn't be easier, just float it to right.</p>
+						<pre><code>.mapplic-sidebar {
+	float: right;
+}</code></pre>
+					</div>
+					<div id="resizing-sidebar">
+						<h3>Resizing the Sidebar</h3>
+						<p>By default, the sidebar takes up 30% of the available width. Make sure the sum of the container and sidebar's width is equal to 100%!</p>
+					<pre><code>/* A slightly narrower sidebar */
+.mapplic-sidebar {
+	width: 25%;
+}
+
+.mapplic-container {
+	width: 75%;	
+}
+</code></pre>
+					</div>
+					<div id="resizing-minimap">
+						<h3>Resizing the Minimap</h3>
+						<p>By default, the minimap has a width of 140 pixels. To resize it, you have to alter the width, the height will be adjusted automatically maintaining the aspect ratio. It can be resized using the following style:</p>
+					<pre><code>.mapplic-minimap {
+	width: 200px;	
+}
+</code></pre>
+					</div>
+					<div id="relocating-components">
+						<h3>Relocating Components</h3>
+						<p>You might want to relocate the UI elements (minimap, level switcher, clear button, fullscreen button, zoom buttons). Use the top/right/bottom/left attributes to move them. For example, if we wanted to move the level switcher to the top-left corner:</p>
+					<pre><code>.mapplic-levels {
+	top: 0;
+	left: 0;	
+}
+</code></pre>
+					</div>
+					<div id="link-new-tab">
+						<h3>Making the link open in a new Tab/Window</h3>
+						<p>Use text editor's search feature to find the first line, and replace it with the second:</p>
+						<pre><code>// find this:
+this.link = $('&lt;a&gt;More&lt;/a&gt;').addClass('mapplic-tooltip-link').attr('href', '#').hide().appendTo(this.el);
+
+// replace with this:
+this.link = $('&lt;a&gt;More&lt;/a&gt;').addClass('mapplic-tooltip-link').attr('href', '#').attr('target', '_blank').hide().appendTo(this.el);
+</code></pre>
+					</div>
+				</div>
+			</section>
+
+			<section id="api" class="section">
+				<div class="inner">
+					<h1>API</h1>
+					<hr>
+					<p>Since version 4.0 Mapplic comes with a list of public methods and events to provide even more flexibility. Using the API is highly advised for future-proof plugin modifications, you can avoid losing changes when updating to a new version.</p>
+					<div id="events">
+						<h2>Events</h2>
+						<p>Events can be bound to initialized Mapplic instances. List of public events currently available:</p>
+						<ul>
+							<li><p><strong>mapready</strong> - the maps is fully loaded</p></li>
+							<li><p><strong>locationopened</strong> - a location is focused</p></li>
+							<li><p><strong>locationclosed</strong> - a location is closed</p></li>
+							<li><p><strong>levelswitched</strong> - the active level is switched</p></li>
+							<li><p><strong>positionchanged</strong> - map movement performed (zoom or pan)</p></li>
+						</ul>
+						<pre><code>// Initializing the plugin on &lt;div id="mapplic"&gt;&lt;/div&gt;
+// Selector saved in map variable
+var map = $('#mapplic').mapplic({
+	source: 'apartment.json',
+	height: 460,
+	mapfill: true,
+	lightbox: true,
+	maxscale: 1
+});
+
+// EXAMPLES (apartment.html)
+// Map ready
+map.on('mapready', function(e, self) {
+	console.log('Map is ready!')
+	// self grants direct access to the map object
+	// The map will be focused on the washing machine by default
+	self.moveTo(0.67, 0.62, 3, 0);
+});
+
+// Location opened
+map.on('locationopened', function(e, location) {
+	// location grants full access to the location
+	console.log(location.title + ' opened.');
+});
+
+// Location closed
+map.on('locationclosed', function(e) {
+	console.log('Location closed.');
+});
+
+// Level switched
+map.on('levelswitched', function(e, level) {
+	console.log('Switched to ' + level + ' level.');
+});
+
+// Position changed
+map.on('positionchanged', function(e, self) {
+	// self grants direct access to the map object
+	console.log('Pan or zoom performed, current scale: ' + self.scale);
+});</code></pre>				
+					</div>
+					<div id="methods">
+						<h2>Methods</h2>
+						<p>Metods are public function performing basic tasks. You can call them using the map object which can be accessed by calling .data('mapplic') on the selector. The map object also grants access to components and other variables. Currently supported public methods are:</p>
+						<ul>
+							<li><p><strong>switchLevel(target)</strong> - switch to level with ID <i>target</i></p></li>
+							<li><p><strong>moveTo(x, y, s, d)</strong> - move to position <i>x</i>, <i>y</i> on scale <i>s</i> in <i>d</i> milliseconds</p></li>
+							<li><p><strong>getLocationData(id)</strong> - get the data object of location</p></li>
+							<li><p><strong>showLocation(id, d)</strong> - focus to location in <i>d</i> milliseconds</p></li>
+							<li><p><strong>hideLocation()</strong> - close currently active location</p></li>
+							<li><p><strong>updateLocation(id)</strong> - update location on the map</p></li>
+						</ul>
+						<pre><code>// Initializing the plugin on &lt;div id="mapplic"&gt;&lt;/div&gt;
+// Selector saved in map variable
+var map = $('#mapplic').mapplic({
+	source: 'apartment.json',
+	height: 460,
+	mapfill: true,
+	lightbox: true,
+	maxscale: 1
+});
+
+// Access to map object from selector
+var self = map.data('mapplic');
+
+// EXAMPLE 1 (world-high.html)
+// Showing visitor's geolocation
+map.on('mapready', function(e, self) {
+	// Update location with geoposition
+	if (navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(function(pos) {
+			var location = self.getLocationData('pos');
+			location.lat = pos.coords.latitude;
+			location.lng = pos.coords.longitude;
+			self.updateLocation('pos');
+		});
+	}
+	else console.log('Geolocation not enabled.');
+});
+
+// EXAMPLE 2
+// Switch level from external button
+$(document).on('click', '#goto-level1-button', function(e) {
+	e.preventDefault();
+	self.switchLevel('level1');
+});</code></pre>
+					</div>
+				</div>
+			</section>
+
+			<section id="others" class="section">
+				<div class="inner">
+					<h1>Others</h1>
+					<hr>
+					<p>Thank you for reading the docs carefully. In case you found anything wrong or incomplete please let us know. We are working hard to provide an affordable, premium quality custom map solution.</p>
+					<img src="img/stars.png">
+					<p>If you like the plugin please consider rating it with <strong>5 stars</strong> on <a href="http://codecanyon.net/downloads#item-6275001" target="_blank">CodeCanyon</a>.</p>
+					<div id="credits">
+						<h2>Credits</h2>
+						<ul>
+							<li><p><strong>jQuery Library</strong></p></li>
+							<li><p><strong>jQuery Mouse Wheel</strong> - mousewheel</p></li>
+							<li><p><strong>Hammer.js</strong> - pinch zoom</p></li>
+							<li><p><strong>Magnific Popup</strong> - lightbox</p></li>
+							<li><p><strong>FontAwesome</strong> - icon fonts</p></li>
+						</ul>
+					</div>
+
+					<div id="changelog" class="section">
+						<h2>Changelog</h2>
+						<h3>Version 4.0 - June 10th, 2016</h3>
+						<pre>
+- GEOLOCATION feature
+- LIGHTBOX support
+- API with basic methods and events
+- new built in map: The Netherlands
+- improved responsive behavior
+- pin label support
+- new pin types
+- description in hover tooltip
+- tooltip with thumnail
+- default fill color and default action
+- mousewheel setting
+- css and javascript optimizations
+- hammer.js updated to version 2.0.6</pre>
+						<h3>Version 3.1 - May 27th, 2015</h3>
+						<pre>
+- SMART TOOLTIP - tooltip now repositions itself and it's always visible
+- 7 new built in maps: Continents, Australia, Italy, Switzerland, Russia, China, Brazil
+- inline JSON support
+- possibility to link floors
+- introdution of UI themes
+- tooltip scroll bug fixed
+- small CSS fixes</pre>
+
+						<h3>Version 3.0 - January 31st, 2015</h3>
+						<pre>
+- 7 built in maps: World, Europe, USA, Canada, France, Germany, England
+- new generation of interactive SVG maps (old method still supported)
+- deeplinking engine rewritten (hash > query parameter)
+- zoom buttons (+/-) added
+- map in container: fit or fill
+- mobile optimiztaion
+- retina support
+- hammer.js updated to version 2.0.4
+- new pin types added
+- fontawesome icons for pins
+- drag&amp;drop fix: now clickable areas can be dragged as well without activating them
+- small design changes</pre>
+
+						<h3>Version 2.0.1 - August 2nd, 2014</h3>
+						<pre>
+- fullscreen bug fixed
+- IE9 tooltip close/clear button bug fixed</pre>
+
+						<h3>Version 2.0 - June 6th, 2014</h3>
+						<pre>
+- PINCH ZOOM added for touch devices
+- hybrid mode added (now you can have clickable shapes and pins on the same map)
+- developer mode added (easy to find x/y coordinates)
+- tooltip rewritten to support any data (ex. youtube videos) 
+- tooltip dynamic width
+- tooltip dynamic height (with scrollbar if needed)
+- smart tooltip positioning
+- fullscreen button added
+- search feature improved
+- SVG tutorial included
+- hover tooltip added
+- pin animations added
+- ajax preloader added
+- new flat design
+- source code improved and greatly optimized
+- and many more</pre>
+
+						<h3>Version 1.0.1 - December 8th, 2013</h3>
+						<pre>
+- minimap click event fixed
+- responsivity bug fixed (list and search shown on mobile devices)</pre>
+
+					</div>
+				</div>
+			</section>
+		</div>
+
+		<footer id="footer">
+			<div class="inner">
+				<p>Copyright &copy; 2015 <a href="http://codecanyon.net/user/sekler?ref=sekler" target="_blank"><b>sekler</b></a>. All rights reserved.</p>
+			</div>
+		</footer>
+	</div>
+
+	<!-- Scripts -->
+	<script type="text/javascript" src="js/smoothscroll.js"></script>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/highlight.pack.js"></script>
+	<script type="text/javascript">
+		$(window).scroll(function() {
+			// Sticky sidebar
+			if ($(window).scrollTop() > $('.sidebar-holder').offset().top-1) {
+				$('#sidebar').addClass('fixed');
+
+			} else {
+				$('#sidebar').removeClass('fixed');
+			}
+
+			// Highlight menu
+			$('#content .section').each(function() {
+				if ($(window).scrollTop() > $(this).offset().top - 20) {
+					var id = $(this).attr('id');
+					$('#sidebar a').removeClass('active');
+					$('#sidebar a[href=#'+ id +']').addClass('active');
+				}
+			});
+
+			// Highlightjs
+			hljs.initHighlightingOnLoad();
+		});
+
+		$(window).scroll();
+	</script>
+</body>
+</html>

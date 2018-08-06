@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Register - Sciport
+{% endblock title %}
+
+{% block content %}
+<div id="login">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4>Register</h4>
+                    </div><!-- end of "panel-heading" -->
+
+                    <div class="panel-body">
+                        {% for field in register_form %}
+                            {{ field.error }}
+                        {% endfor %}
+                        <form method="post" action="{% url 'auth_register' %}">{% csrf_token %}
+                            <P><label>User:</label><br>
+                            {{ register_form.username }}
+
+                            <P><label>First Name:</label><br>
+                            {{ register_form.first_name }}
+
+                            <P><label>Last Name:</label><br>
+                            {{ register_form.last_name }}
+
+                            
+                            <P><label>Email:</label><br>
+                            {{ register_form.email }}
+
+                            <P><label>Password:</label><br>
+                            {{ register_form.password1 }}
+                            <P><label>Password Confirmation:</label><br>
+                            {{ register_form.password2 }}
+
+                            <p><button type="submit" class="btn btn-primary pull-right">Register</button>
+                            </p>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

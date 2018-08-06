@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Profile
+{% endblock title %}
+
+{% block additional_head %}
+   
+{% endblock additional_head %}
+
+{% block content %}
+    
+    <!-- Stylesheets -->
+    <!--<link rel="stylesheet" type="text/css" href="/static/map/css/style.css">-->
+    <!-- Internet Explorer -->
+    <!--[if lt IE 9]>
+      <link rel="stylesheet" type="text/css" href="mapplic/mapplic-ie.css">
+      <script type="text/javascript" src="js/html5shiv.js"></script>
+    <![endif]-->
+    <style>
+    .responsive-img {
+      pointer-events: none;
+      width: 100%;
+    }
+
+    .img-loader-wrapper {
+      position: relative;
+      filter: grayscale(95%);
+      transition: filter 1s;
+    }
+
+    .img-loader-wrapper:hover {
+      filter: grayscale(0%);
+    }
+
+    .img-loader-wrapper img.img-loader-large {
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+    }
+    </style>
+
+    <script>
+    $(document).ready(function() {
+      $(".img-loader-wrapper").each(function() {
+        let each = $(this);
+        let small = each.find(".img-loader-small");
+        let large = each.find(".img-loader-large");
+
+
+        small.on("load", function() {
+          large.attr("src", large.attr("src-large"));
+        });
+
+        large.on("load", function() {
+          large.animate({ opacity: 1 }, 1000);
+        });
+
+        small.attr("src", small.attr("src-small"));
+      });
+    });
+    </script>
+ 
+   <div class="container">
+        <div class="row card" style="background-color: rgba(224,242,241, 0.9);">
+         {% load assets_static %}
+
+         {% for each in skill %}
+           <div class="col s6 m3 l2">
+              <a href="{% url 'sciport_subskill' each.name|safe %}">
+                <div class="card hoverable" style="margin:5">
+                  <div class="white waves-effect waves-block img-loader-wrapper">
+                    <!-- <img class="responsive-img img-loader-small" src="/{{each.picture_small|assets_static:'assets'}}"> -->
+                    <img class="responsive-img img-loader-small" src-small="/static/pictures-small/2016/11/10/WhitePlacehold.jpg">
+                    <img class="responsive-img img-loader-large" src-large="/{{each.picture|assets_static:'assets'}}">
+                  </div>  
+                  <div  align="center">
+                  {% if each.name %}
+                     <div style="color:black; background-color:white">{{each.name}}</div>
+                  {% endif %}
+                  </div>
+                </a>
+              </div> 
+         </div>
+         {% endfor %}
+
+        </div>
+   </div>       
+ {% endblock %}
+
+{% block footer_scripts %}
+
+ 
+
+{% endblock footer_scripts %}          

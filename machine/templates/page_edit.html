@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Page
+{% endblock title %}
+
+{% block content %}
+
+<link rel="stylesheet" href="/static/datepicker/jquery-ui.css">
+<script src="/static/datepicker/jquery-1.10.2.js"></script>
+<script src="/static/datepicker/jquery-ui.js"></script>
+
+<style>
+      input[type=text]{
+        background-color:white !important; 
+       }
+
+      [type="checkbox"]:not(:checked), [type="checkbox"]:checked{    
+           position:relative !important; 
+            left: 0px !important; 
+           opacity: 1 !important; 
+      }
+</style>
+
+<script language="javascript">
+  $( document ).ready(function() {
+    
+     if($( "#id_working" ).val() =="yes")
+     {
+        $( "#id_working_comments" ).hide();
+        $( "#id_date_of_working").hide();
+        $( '.ui-datepicker-trigger').hide();
+     }  
+
+     $( "#id_working" ).change(function() {
+      if($(this).val() =="partial" || $(this).val() =="no")
+      {
+        $( "#id_working_comments" ).show();
+        $( "#id_date_of_working").show();
+        $( '.ui-datepicker-trigger').show();
+
+      }
+      else
+      {
+        $( "#id_working_comments" ).prepend( "<b>Comments</b>" );
+        $( "#id_working_comments" ).hide();
+        $( "#id_date_of_working" ).prepend( "<b>Date of working</b>" );
+        $( "#id_date_of_working").hide();
+        $( '.ui-datepicker-trigger').hide();
+
+      }
+
+    });
+  });
+</script>
+
+<div id="page">
+    <div class="container">
+        <div class="row card inner-container">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4>Name:{{qr_code}}</h4>
+                    </div><!-- end of "panel-heading" -->
+
+                    <div class="panel-body">
+                        {% if message %}
+                            <div class="alert alert-success" role="alert"> <strong>{{message}}</div>
+                        {% endif %}
+                        <form method="post" action="" enctype="multipart/form-data">{% csrf_token %}
+                            
+                            <table class="table"> 
+
+                             {{ page_form.as_table }}
+                             
+                            </table>
+
+                            <h5>Frequently Asked Questions</h5>
+                                                        
+                            <table class="table"  id="form_set">
+                                   {{ faqformset.as_table }}
+                            </table> 
+
+                          <!--<input type="button" value="Add More" id="add_more">-->
+                                    
+                                    <a class="btn-large waves-effect waves-light red" 
+                                    style="margin-top:15px;"  id="add_more"><i class="material-icons">add</i></a>
+
+                                    <div id="empty_form"  style="display:none">
+                                        <table  class='table no_error'>
+                                            {{ faqformset.empty_form.as_table }}
+                                        </table>
+                                    </div>
+                                
+                                    <script>
+                                      $(document).ready(function() {
+                                        $('#add_more').click( function (e) {
+                                            e.preventDefault();
+
+                                            var form_idx = $('#id_faq_set-TOTAL_FORMS').val();
+
+                                            $('#form_set').append($('#empty_form').html().replace(/__prefix__/g, form_idx));
+                                            $('#id_faq_set-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+
+                                        });
+                                     });   
+                                    </script>     
+
+                            <br><br><br>
+                            <h5>Upload PDF Files</h5>
+                            <table class="table"  id="form_set2">
+                                   {{ uploadformset.as_table }}
+                            </table>  
+
+                              <a class="btn-large waves-effect waves-light red" 
+                                    style="margin-top:15px;"  id="add_more2"><i class="material-icons">add</i></a>
+
+                                    <div id="empty_form2"  style="display:none">
+                                        <table  class='table no_error'>
+                                            {{ uploadformset.empty_form.as_table }}
+                                        </table>
+                                    </div>
+                                
+                                    <script>
+                                      $(document).ready(function() {
+                                        $('#add_more2').click( function (e) {
+                                            e.preventDefault();
+
+                                            var form_idx = $('#id_uploadfiles_set-TOTAL_FORMS').val();
+
+                                            $('#form_set2').append($('#empty_form2').html().replace(/__prefix__/g, form_idx));
+                                            $('#id_uploadfiles_set-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+
+                                        });
+                                     });   
+                                    </script>     
+
+                     <!--
+                      <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                               <h5>Frequently Asked Questions</h5>
+                                <div data-role="dynamic-fields">                                 
+                                  {% for each in page.faq_set.all %}
+                                    <div class="form-inline">
+                                        <div class="form-group">
+                                            <label class="sr-only" for="field-name">Question</label>
+                                            <input type="text" class="form-control" name="quistion[]" id="quistion" 
+                                            value="{{ each.quistion }}" placeholder="Question">
+                                        </div>
+                                        <span>-</span>
+                                        <div class="form-group">
+                                            <label class="sr-only" for="field-value">Answer</label>
+                                            <input type="text" class="form-control" name="answer[]" id="answer" 
+                                            value="{{ each.answer }}" placeholder="Answer">
+                                        </div>
+                                        <button class="btn btn-danger" data-role="remove">
+                                            <span class="glyphicon glyphicon-remove"></span>
+                                        </button>
+                                        <button class="btn btn-primary" data-role="add">
+                                            <span class="glyphicon glyphicon-plus"></span>
+                                        </button>
+                                    </div>  
+                                  {% endfor %}  
+
+                                   {% if page.faq_set.all.count == 0 %}
+                                   <div class="form-inline">
+                                        <div class="form-group">
+                                            <label class="sr-only" for="field-name">Question</label>
+                                            <input type="text" class="form-control" name="quistion[]" id="quistion"  placeholder="Question">
+                                        </div>
+                                        <span>-</span>
+                                        <div class="form-group">
+                                            <label class="sr-only" for="field-value">Answer</label>
+                                            <input type="text" class="form-control" name="answer[]" id="answer"  placeholder="Answer">
+                                        </div>
+                                        <button class="btn btn-danger" data-role="remove">
+                                            <span class="glyphicon glyphicon-remove"></span>
+                                        </button>
+                                        <button class="btn btn-primary" data-role="add">
+                                            <span class="glyphicon glyphicon-plus"></span>
+                                        </button>
+                                    </div>  
+                                  {% endif %}
+
+
+                                </div>  
+                            </div> 
+                        </div>  
+                    </div>-->
+
+                            <p><button type="submit" class="btn btn-primary pull-right" style="margin:5px;" >Submit</button>
+                            </p>
+                           
+                           <!-- <p><button type="button" class="btn btn-primary pull-right" style="margin:5px;" 
+                                onClick="location.href='/machine/page/{{qr_code}}/'" >Back</button>
+                            </p>-->
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+  [data-role="dynamic-fields"] > .form-inline + .form-inline {
+      margin-top: 0.5em;
+  }
+
+  [data-role="dynamic-fields"] > .form-inline [data-role="add"] {
+      display: none;
+  }
+
+  [data-role="dynamic-fields"] > .form-inline:last-child [data-role="add"] {
+      display: inline-block;
+  }
+
+  [data-role="dynamic-fields"] > .form-inline:last-child [data-role="remove"] {
+      display: none;
+  }
+</style>
+<script language="javascript">
+    $(function() {
+    // Remove button click
+    $(document).on(
+        'click',
+        '[data-role="dynamic-fields"] > .form-inline [data-role="remove"]',
+        function(e) {
+            e.preventDefault();
+            $(this).closest('.form-inline').remove();
+        }
+    );
+    // Add button click
+    $(document).on(
+        'click',
+        '[data-role="dynamic-fields"] > .form-inline [data-role="add"]',
+        function(e) {
+            e.preventDefault();
+            var container = $(this).closest('[data-role="dynamic-fields"]');
+            new_field_group = container.children().filter('.form-inline:first-child').clone();
+            new_field_group.find('input').each(function(){
+                $(this).val('');
+            });
+            container.append(new_field_group);
+        }
+    );
+});
+
+</script>
+<script>
+        $( ".datepicker" ).datepicker({
+            dateFormat: "yy-mm-dd", 
+            changeYear: true,
+            changeMonth: true,
+            showOn: 'button',
+            buttonText: 'Show Date',
+            buttonImageOnly: true,
+            buttonImage: '/static/datepicker/images/calendar.gif',
+        });
+</script>
+{% endblock %}
